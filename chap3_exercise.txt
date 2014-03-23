@@ -1,0 +1,68 @@
+The library consists of three classes, one representing bank accounts, one representing people,
+and one representing monetary transactions. Person objects should be able to draw on zero or more
+accounts, and account objects should be accessible to one or more people. Transactions should
+represent the transfer of a certain amount of money between one person and another, by transferring
+the money from an account accessible by the first person to an account accessible by the second.
+
+Attempts to create invalid transactions should fail.
+
+After having been created, it should be possible to execute a transaction to perform the actual
+transfer between accounts.
+All monies should be represented as fixed point numbers, not floating point.
+
+>> from bank import account, person, transaction
+
+>> acc1 = Account('CHASE', 100)
+>> acc2 = Account('PNC', 50)
+>> acc3 = Account('TD', 25)
+
+>> max = Person('Max')
+>> anna = Person('Anna')
+>> susanne = Person('Susanne')
+
+>>max.add_account(acc1)
+'CHASE'
+>>max.add_account(acc2)
+'PNC'
+>>anna.add_account(acc3)
+'TD'
+
+>>max.withdraw(9.05, 'PNC')
+40.05
+
+>>max.get_accounts()
+{{'acc': 'CHASE', 'bal': 100}, {'acc': 'PNC', 'bal': 40.05}}
+
+>>max.withdraw(41, 'PNC')
+Traceback (most recent call last):
+ValueError: Insufficient funds to withdraw requested amount.
+
+>>susanne.withdraw(5, 'BoA')
+Traceback (most recent call last):
+ValueError: Account 'BoA' not found.
+
+>>max.withdraw(40.05, 'PNC')
+0.00
+
+>>max.withdraw(1, 'PNC')
+Traceback (most recent call last):
+ValueError: Insufficient funds to withdraw requested amount from 'PNC'.
+
+>>max.transfer(20.25, 'CHASE', anna)
+79.75
+
+>>max.get_accounts()
+[{'acc': 'CHASE', 'bal': 79.75}, {'acc': 'PNC', 'bal': 40.05}]
+>>anna.get_accounts()
+[{'acc': 'TD', 'bal': 45.25}]
+
+>>max.transfer(1, 'PNC', anna)
+Traceback (most recent call last):
+ValueError: Insufficient funds to complete transaction.
+
+>>max.transfer(1, 'CHASE', susanne)
+Traceback (most recent call last):
+ValueError: Invalid transaction.
+
+
+
